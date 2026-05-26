@@ -9,9 +9,18 @@ dotenv.config();
 
 const app = express();
 
+const allowedOrigin = process.env.CLIENT_ORIGIN || "*";
 app.use(
   cors({
-    origin: process.env.CLIENT_ORIGIN || "*",
+    origin: function (origin, callback) {
+      // allow requests with no origin (curl, server-to-server)
+      if (!origin) return callback(null, true);
+      if (allowedOrigin === "*") return callback(null, true);
+      const normalize = (u) => (typeof u === "string" && u.endsWith("/") ? u.slice(0, -1) : u);
+      if (normalize(origin) === normalize(allowedOrigin)) return callback(null, true);
+      return callback(new Error("Not allowed by CORS"));
+    },
+    optionsSuccessStatus: 200,
   })
 );
 
