@@ -62,6 +62,8 @@ router.post(
         });
       }
 
+      const server = req.body.server || "1";
+
       const uploaded = [];
 
       for (const file of req.files) {
@@ -70,10 +72,19 @@ router.post(
         // Wrap cloudinary upload into a promise
         // Upload sequentially to control memory and bandwidth
         // For Render free tier this is safer than parallel 200 uploads
-        const result = await cloudinary.uploader.upload(filePath, {
+        
+        const uploadOptions = {
           resource_type: "image",
           folder: process.env.CLOUDINARY_FOLDER || "img-to-link",
-        });
+        };
+
+        if (server === "2") {
+          uploadOptions.cloud_name = process.env.CLOUDINARY_CLOUD_NAME_2;
+          uploadOptions.api_key = process.env.CLOUDINARY_API_KEY_2;
+          uploadOptions.api_secret = process.env.CLOUDINARY_API_SECRET_2;
+        }
+
+        const result = await cloudinary.uploader.upload(filePath, uploadOptions);
 
         // Clean up local file
         fs.unlink(filePath, () => {});
