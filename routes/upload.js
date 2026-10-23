@@ -86,6 +86,10 @@ router.post(
           uploadOptions.cloud_name = process.env.CLOUDINARY_CLOUD_NAME_3;
           uploadOptions.api_key = process.env.CLOUDINARY_API_KEY_3;
           uploadOptions.api_secret = process.env.CLOUDINARY_API_SECRET_3;
+        } else if (server === "4") {
+          uploadOptions.cloud_name = process.env.CLOUDINARY_CLOUD_NAME_4;
+          uploadOptions.api_key = process.env.CLOUDINARY_API_KEY_4;
+          uploadOptions.api_secret = process.env.CLOUDINARY_API_SECRET_4;
         }
 
         const result = await cloudinary.uploader.upload(filePath, uploadOptions);
